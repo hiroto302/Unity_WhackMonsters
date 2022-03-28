@@ -1,0 +1,78 @@
+@startuml StategeSystem
+
+package Manageres(GameCore)
+{
+  enum GameState
+  {
+    PreGame
+    Playing
+    Paused
+  }
+
+  class GameStateManager<<MonoSingleton>>
+  {
+    + IReadOnlyReactiveProperty<GameState> State
+    + ChangeGameState(GameState state)
+  }
+  GameStateManager --r> GameState
+}
+
+package StageSystem
+{
+  enum Phase
+  {
+    Pre
+    Start
+    First
+    Second
+    Third
+    End
+  }
+  class StageManager<<MonoBehaviour>>
+  {
+    + IReadOnlyReactiveProperty<Phase> StagePhase
+    - TimelimitData data
+    - void UpdatePhase(int timelimit)
+  }
+
+  StageManager --r> Phase
+  StageManager --d> GameStateManager : Observe
+  StageManager --> Data.TimelimitData : Observe
+
+  class TimelimitDisplayer<<MonoBehaviour>>
+  {
+    - TimelimitData data
+    - Text text
+    - void DisplayTimelimit()
+  }
+
+  TimelimitDisplayer --> Data.TimelimitData : Observe
+
+  class TimelimitManager<<MonoBehaviour>>
+  {
+    - TimelimitData data
+    - void CountDownTime()
+  }
+
+  TimelimitManager --> Data.TimelimitData : 制御
+  TimelimitManager --> StageManager : Observe
+
+  class SpawnManager<<MonoBehaviour>>{}
+  SpawnManager --> StageManager : Observe
+
+  class StartSingalDisplayer<<MonoBehaviour>>{}
+  StartSingalDisplayer --> StageManager : Observe
+
+  class StageEndingManager<<MonoBehaviour>>{}
+  StageEndingManager --> StageManager : Observe
+}
+
+  package Data
+  {
+    class TimelimitData<<ScriptableObject>>
+    {
+      + FloatReactiveProperty Timelimit
+    }
+  }
+
+@enduml

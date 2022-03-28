@@ -1,0 +1,48 @@
+@startuml EnemyFormHole
+package Enemies
+{
+  class Slime<<MonoBehaviour>>
+  {
+    + int SpawnHoleID
+    + event ISpawnEnemyFromHole.ReleaseHole OnRelesHole
+  }
+
+  note bottom of Slime : SpawnMnager により生成される敵
+
+  Slime ..|> StageSystem.ISpawnEnemyFromHole
+}
+
+package StageSystem
+{
+  class Hole
+  {
+    + ID
+    + IsVacant
+    + Hole(int id, bool isVacant)
+  }
+
+  class SpawnManager<<MonoBehaviour>>
+  {
+    - List<Hole> holes
+    - List<Transfrom> spawnPositions
+    - List<GamaObject> SpawnEnemys
+    - void GenerateHole()
+    - ReleaseHole(int holeID)
+    - SpawnEnemyFromHole(int n)
+  }
+
+  SpawnManager --> Hole
+  SpawnManager --> ISpawnEnemyFromHole : Observe
+
+  interface ISpawnEnemyFromHole
+  {
+    + int SpawnHoleID
+    + SetHoleID(int holeID)
+    + delegate void ReleseHole(int spawnHole)
+    + event ReleaseHole OnRelesHole
+  }
+
+}
+
+@enduml
+

@@ -1,0 +1,132 @@
+
+@startuml Enemy
+
+package Enemies
+{
+
+  class Slime<<MonoBehaviour>>
+  {
+
+    + ReactiveProperty<State>
+    + readonly IntReactiveProperty HP
+
+    - void UpdateState(State state)
+  }
+
+  enum State
+  {
+    Waited
+    Spawn
+    Idle
+    Return
+    Dead
+  }
+
+  class EnemyStatusData<<ScriptableObject>>
+  {
+    + HP
+    + Atk
+    + Speed
+    + ScorePoint
+  }
+
+  State <-- Slime
+  EnemyStatusData --o Slime
+
+  class Animator<<MonoBehaviour>>
+  class EffectEmitter<<MonoBehaviour>>
+  class Sounder<<MonoBehaviour>>
+
+
+  Slime <-- Animator
+  Slime <-- EffectEmitter : Observbe
+  Slime <-- Sounder
+}
+@enduml
+
+@startuml PlayerAndEnemy
+package Enemies
+{
+
+  class Slime<<MonoBehaviour>>
+  {
+
+    + ReactiveProperty<State>
+    + readonly IntReactiveProperty HP
+    + IObservable<Unit> OnApplayDamage
+    -isTappable
+
+    + void Applaydamage(PlayerStatusData data)
+    + void OnPoinaterDown(PointerEventData data)
+  }
+
+  enum State
+  {
+    Waited
+    Spawn
+    Idle
+    Return
+    Dead
+  }
+
+  class EnemyStatusData<<ScriptableObject>>
+  {
+    + HP
+    + Atk
+    + Speed
+    + ScorePoint
+  }
+
+  State <-- Slime
+  EnemyStatusData --o Slime
+
+  class Animator
+  class EffectEmitter
+  class Sounder
+
+
+  Slime <-- Animator
+  Slime <-- EffectEmitter : Observbe
+  Slime <-- Sounder
+
+
+  Slime ..r|> EventSystems.IPointerDownHnadler
+  Slime ..|> Damage.IApplycableDamage
+}
+
+package EventSystems
+{
+  interface IPointerDownHnadler
+  {
+    + void OnPoinaterDown(PointerEventData data)
+  }
+}
+
+
+package Damage
+{
+  interface IApplycableDamage
+  {
+    PlayerStatusData data
+    + void ApplyDamage(PlayerStatusData data)
+  }
+
+  IApplycableDamage --r> Data.PlayerStatusData
+}
+package Player
+{
+  class Player
+  Player o-- Data.PlayerStatusData
+
+  Player --l> EventSystems.IPointerDownHnadler : タップする
+}
+
+package Data
+{
+  class PlayerStatusData<<ScriptableObject>>
+  {
+    + int Atk
+  }
+}
+
+@enduml

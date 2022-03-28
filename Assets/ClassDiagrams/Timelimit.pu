@@ -1,0 +1,57 @@
+@startuml TimelimitControlWithUniRx
+
+package Data
+{
+  class TimelimitData<<ScriptableObject>>
+  {
+    + FloatReactiveProperty Timelimit
+  }
+}
+
+package StageSystem
+{
+  class TimelimitManager<<MonoBehaviour>>
+  {
+    - TimelimitData data
+    - void CountDownTime()
+  }
+
+  TimelimitManager --> TimelimitData : 制御
+
+  class TimelimitDisplayer<<MonoBehaviour>>
+  {
+    - TimelimitData data
+    - Text text
+    - void DisplayTimelimit()
+  }
+
+  TimelimitDisplayer --> TimelimitData : Observe
+}
+
+@enduml
+
+@startuml
+class Time
+{
+  int time;
+  + void Time(int time)
+}
+
+class TimelimitManager<<Monobehavior>>
+{
+  + Time timelimit
+  - void CountDownTime(Time time)
+}
+
+TimelimitManager --> Time : 制御
+
+class TimelimitDisplayer<<Monobehavior>>
+{
+  - Text text
+  - void DisplayTimelimit()
+}
+
+TimelimitDisplayer --l> TimelimitManager : 参照
+
+
+@enduml

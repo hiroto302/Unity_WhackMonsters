@@ -1,0 +1,97 @@
+@startuml
+
+package Managers(GamaCore)
+{
+  enum GameState
+  {
+    PreGame
+    Playing
+    Paused
+  }
+
+  class GameStateManager<<MonoSingleton>>
+  {
+    + IReadOnlyReactiveProperty<GameState> State
+    + ChangeGameState(GameState state)
+  }
+  GameStateManager --> GameState
+
+  class UIMamager<<MonoSingleton>>
+  {
+    - Image fadeImage
+    - GameObject dummyCamera
+    + void SetDummyCamera(bool active)
+    + void FadeInImageAlpha()
+    + void FadeOutImageAlpha()
+  }
+
+  class GameSceneManger<<MonoSingleton>>
+  {
+    - ScenesData data
+    + LoadScene(string SceneName, GameState state)
+    + ReloadScene(GameStaet state)
+  }
+  GameSceneManger --r> Data.ScenesData
+  GameSceneManger --d> GameStateManager : Change GameState
+  GameSceneManger --l> UIMamager
+
+  class SoundManager<<MonoSingleton>>
+  {
+    - AudioMixer mixer
+    - AudioMixerSnapshot pregam
+    - AudioMixerSnapshot playing
+  }
+  SoundManager --r> GameStateManager : Observe
+
+}
+
+package Data
+{
+  class GameScene<<ScriptableObject>>
+  {
+    + string SceneName
+  }
+
+  class Menu{}
+  Menu --|> GameScene
+
+  class StageLevel{}
+  StageLevel --|> GameScene
+
+  class ScenesData<<ScriptableObject>>
+  {
+    + List<Menu> Menus
+    + List<StageLevel> StategeLevels
+  }
+
+  ScenesData o-- Menu
+  ScenesData o-- StageLevel
+}
+
+package Buttons
+{
+  abstract class AButton
+  {
+    # Button button
+    + abstract void Execute()
+  }
+
+  class PlayGameButton
+  {
+    - GameScene data
+    + override void Execute()
+  }
+
+  PlayGameButton --r|> AButton
+  PlayGameButton --d> GameSceneManger : LoadeScene(data.SceenName, GameState.Playing)
+}
+
+package Player
+{
+  class Player{}
+
+  Player --l>AButton : クリック
+}
+
+
+@enduml

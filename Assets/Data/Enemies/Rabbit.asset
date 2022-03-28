@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5bef2dffd74343d989c49305783feda, type: 3}
+  m_Name: Rabbit
+  m_EditorClassIdentifier: 
+  HP: 1
+  Atk: 0
+  Speed: 1
+  ScorePoint: 10
+  Type: 2
+  ShortDescription: "\u7A74\u304B\u3089\u98DB\u3073\u51FA\u308B\u514E\u306E\u3088\u3046\u306A\u6575"
